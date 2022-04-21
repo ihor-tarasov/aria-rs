@@ -1,48 +1,33 @@
-// 2 + 2 * 2
+use std::io::Write;
 
-mod opcodes {
-    pub const END: u8 = 0x00;
-    pub const CONST: u8 = 0x01;
-    pub const ADD: u8 = 0x02;
-    pub const MUL: u8 = 0x03;
-}
+use aria_rs::{lexer::Tokenizer, vm::ChunkBuilder, parser};
 
 fn main() {
-    let constants = [
-        2
-    ];
+    loop {
+        let mut code = String::new();
 
-    let program = [
-        opcodes::CONST, 0,
-        opcodes::CONST, 0,
-        opcodes::MUL,
-        opcodes::CONST, 0,
-        opcodes::ADD,
-        opcodes::END,
-    ];
+        print!("-> ");
+        std::io::stdout().flush().unwrap();
 
-    let mut stack: Vec<i32> = Vec::new();
+        std::io::stdin().read_line(&mut code).unwrap();
 
-    let mut pc = program.iter().cloned();
-    while let Some(opcode) = pc.next() {
-        match opcode {
-            opcodes::END => break,
-            opcodes::CONST => stack.push(*constants.get(pc.next().unwrap() as usize).unwrap()),
-            opcodes::ADD => {
-                let rhs = stack.pop().unwrap();
-                let lhs = stack.pop().unwrap();
-                stack.push(lhs.wrapping_add(rhs));
-            },
-            opcodes::MUL => {
-                let rhs = stack.pop().unwrap();
-                let lhs = stack.pop().unwrap();
-                stack.push(lhs.wrapping_mul(rhs));
-            },
-            _ => panic!(),
+        let mut tokenizer = Tokenizer::new(code.as_bytes());
+        let mut chunk_builder = ChunkBuilder::new();
+
+        match parser::parse(&mut tokenizer, &mut chunk_builder) {
+            Ok(_) => (),
+            Err(error) => {
+                println!("Parser error: {:?}", error.etype());
+                continue;
+            }
         }
-    }
 
-    if let Some(value) = stack.pop() {
-        println!("{}", value);
+        let mut stack = Vec::new();
+
+        chunk_builder.build().run(&mut stack, 0);
+
+        if let Some(value) = stack.pop() {
+            println!("{}", value);
+        }
     }
 }

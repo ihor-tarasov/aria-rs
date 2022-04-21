@@ -20,7 +20,7 @@ pub fn parse(reader: &mut Tokenizer, builder: &mut ChunkBuilder) -> ParserResult
     }
 
     match reader.next() {
-        Some(token) => utils::parser_unexpected(token.info()),
+        Some(token) => utils::unexpected(token.info()),
         None => {
             builder.instruction(opcodes::END, TokenInfo::new(0, 0));
             Ok(())

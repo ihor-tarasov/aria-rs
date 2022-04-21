@@ -2,7 +2,7 @@ use crate::lexer::{Token, TokenInfo, Tokenizer};
 
 use super::{ParserError, ParserErrorType, ParserResult};
 
-pub fn parser_take_token(reader: &mut Tokenizer) -> Result<Token, ParserError> {
+pub fn take_token(reader: &mut Tokenizer) -> Result<Token, ParserError> {
     match reader.next() {
         Some(token) => Ok(token),
         None => Err(ParserError::new(
@@ -12,7 +12,7 @@ pub fn parser_take_token(reader: &mut Tokenizer) -> Result<Token, ParserError> {
     }
 }
 
-pub fn parser_unexpected(info: TokenInfo) -> ParserResult {
+pub fn unexpected(info: TokenInfo) -> ParserResult {
     Err(ParserError::new(ParserErrorType::UnexpectedToken, info))
 }
 

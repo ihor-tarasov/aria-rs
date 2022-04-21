@@ -1,4 +1,4 @@
-use super::{lex_number, lex_single, reader::PeekableReader, Token, TokenInfo};
+use super::{number, single, reader::PeekableReader, Token, TokenInfo};
 
 pub fn lex(reader: &mut PeekableReader) -> Option<Token> {
     let mut c = reader.peek()?;
@@ -9,11 +9,11 @@ pub fn lex(reader: &mut PeekableReader) -> Option<Token> {
     }
 
     if c.is_ascii_digit() {
-        return lex_number::lex(reader);
+        return number::lex(reader);
     }
 
     Some(Token::new(
-        lex_single::lex(reader)?,
+        single::lex(reader)?,
         TokenInfo::new(reader.counter() - 1, 1),
     ))
 }

@@ -2,8 +2,8 @@ mod token_type;
 mod token_info;
 mod token;
 mod reader;
-mod lex_number;
-mod lex_single;
+mod number;
+mod single;
 mod lex;
 mod tokenizer;
 

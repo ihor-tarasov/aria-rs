@@ -6,7 +6,7 @@ use crate::{
 use super::{utils, ParserResult};
 
 pub fn parse(reader: &mut Tokenizer, builder: &mut ChunkBuilder) -> ParserResult {
-    let token = utils::parser_take_token(reader)?;
+    let token = utils::take_token(reader)?;
     let info = token.info();
     match token.take_type() {
         TokenType::Integer(value) => {
@@ -16,6 +16,6 @@ pub fn parse(reader: &mut Tokenizer, builder: &mut ChunkBuilder) -> ParserResult
             Ok(())
         }
         TokenType::UnknownCharacter => utils::unknown_character(info),
-        _ => utils::parser_unexpected(info),
+        _ => utils::unexpected(info),
     }
 }
